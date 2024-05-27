@@ -1,3 +1,4 @@
+fullNameOverride: "svis-nginx"
 replicaCount: 1
 image:
   pullPolicy: Always
