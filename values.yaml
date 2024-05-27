@@ -1,3 +1,5 @@
 fullnameOverride: "prod-nginx"
 image:
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
+podLabels:
+  environment: prod
