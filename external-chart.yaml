@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-multi-external-chart 
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  project: default
+  sources:
+    - chart: nginx
+      repoURL: https://charts.bitnami.com/bitnami 
+      targetRevision: 17.1.0
+      helm:
+        valueFiles:
+          - $values/values.yaml
+          - https://raw.githubusercontent.com/franzudev/argo-multisource/prod/values.yaml
+    - repoURL: https://github.com/franzudev/argo-multisource 
+      targetRevision: svil
+      ref: values
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nginx

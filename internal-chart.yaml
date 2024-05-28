@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-multi-internal-chart 
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  project: default
+  sources:
+    - path: nginx
+      repoURL: https://github.com/franzudev/argo-multisource.git 
+      targetRevision: main
+      helm:
+        valueFiles:
+          - https://raw.githubusercontent.com/franzudev/argo-multisource/svis/values.yaml 
+          - https://raw.githubusercontent.com/franzudev/argo-multisource/prod/values.yaml 
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+    - CreateNamespace=true
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: nginx
